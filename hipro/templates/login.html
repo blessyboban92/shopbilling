@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<style>
+    body
+    {text-align: center;}
+    .login-container {
+            margin: 0 auto; /* Center-align the container horizontally */
+            width: 300px; /* Set the width of the container */
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #f9f9f9;
+        }
+</style>
+ <div class="login-container">
+        <h2>Login</h2>
+<form action="login/" method="post">
+    {% csrf_token %}
+    <label for="username">Username:</label>
+    <input type="text" name='username'placeholder="Enter the username"><br><br>
+    <label for="password">Password</label>
+    <input type="password" name='password' placeholder="Enter the password"><br><br>
+    <input type="submit" value="Login">
+</form>
+      {% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+ </div>
+</body>
+</html>

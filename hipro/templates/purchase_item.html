@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>purchasemaster</title>
+</head>
+<body>
+<div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Navbar</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'hiapp:home' %}">Back</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Pricing</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="#">Disabled</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+<h3 class="alert alert-warning text-center">Purchase Master</h3>
+<div class="container mt-3">
+    {% for message in messages %}
+    <p class="alert alert-success mt-3">{{message}}</p>
+    {% endfor %}
+    <form id="purchaseform" method="post" action="{% url 'partyapp:purchase_item' %}">
+        {% csrf_token %}
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="purchaseno">Purchase Number</label>
+                        <input type="text" class="form-control" name="purchase_number" id="purchasenumber"
+                               placeholder="Purchase Number" value="{{ series_code}}" readonly>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="date">Date</label>
+                        <input type="date" class="form-control" id="date" name="date" readonly>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="supinvoiceno">Supplier Invoice Number</label>
+                        <input type="text" class="form-control" name="supinvoiceno" id="supinvoiceno"
+                               placeholder="Supplier Invoice Number">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="supdate">Supplier Date</label>
+                        <input type="date" class="form-control" id="supdate" name="supdate" readonly>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label for="party">Party</label>
+                        <input type="text" class="form-control" name="party" id="party" placeholder="Party Name"
+                               value="">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="payment_method">Payment Method:</label><br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="payment_method" id="cash" value="cash">
+                            <label class="form-check-label" for="cash">Cash Purchase</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="payment_method" id="credit"
+                                   value="credit">
+                            <label class="form-check-label" for="credit">Credit</label>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="itemname">Item Name</label>
+                        <input type="text" class="form-control" name="itemname" id="itemname"
+                               placeholder="Item Name">
+                        <datalist id="items">
+                            {% for item in items %}
+                            <option value="{{item.itemname}}" data-mrp="{{item.mrp}}" data-unit="{{item.unit}}"
+                                    data-purchasetax="{{item.purchasetax}}"></option>
+                            {% endfor %}
+                        </datalist>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="mrp">MRP</label>
+                        <input type="text" class="form-control" name="mrp" id="mrp" placeholder="Item MRP">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="unit">Unit</label>
+                        <input type="text" class="form-control" name="unit" id="unit" placeholder="Item unit">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="purchasetax">Purchase Tax in (%)</label>
+                        <input type="text" class="form-control" name="purchasetax" id="purchasetax"
+                               placeholder="Purchase Tax in %">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="TotalQuantity">Total Quantity</label>
+                        <input type="number" class="form-control" name="totalqty" id="totalqty"
+                               placeholder="Item Quantity">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="total">Total</label>
+                        <input type="text" class="form-control" name="total" id="total" placeholder="Total Value"
+                        >
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="grand_total">Grand Total</label>
+                        <input type="text" class="form-control" name="grandtotal" id="grandtotal" readonly value="0.00">
+                    </div>
+
+                    <!--<fieldset id="table-data" style="display: none;"></fieldset>
+                    <input type="hidden" name="item_names[]" value="">
+                    <input type="hidden" name="item_data" id="item_data"/>
+                    <div class="form-group col-md-4">!-->
+                        <button type="button" id="add-item">Add Item</button>
+
+                        <button type="submit" class="btn btn-primary">Save Purchase</button>
+                    </div>
+
+    </form></div>
+    <div class="mt-5">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th scope="col">Item Name</th>
+                <th scope="col">Mrp</th>
+                <th scope="col">Unit</th>
+                <th scope="col">Purchase Tax</th>
+                <th scope="col">Total Quantity</th>
+                <th scope="col">Total</th>
+            </tr>
+            </thead>
+            <tbody id="item-table-body">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+<!--<script>
+  $(document).ready(function() {
+      $("#itemname").on('input', function() {
+          var selectedValue = $(this).val();
+          var selectedItem = $("#items option[value='" + selectedValue + "']");
+
+          if (selectedItem.length > 0) {
+              var mrp = selectedItem.data('mrp');
+              var unit = selectedItem.data('unit');
+              var purchasetax = selectedItem.data('purchasetax');
+              $("#unit").val(unit);
+              $("#mrp").val(mrp);
+              $("#purchasetax").val(purchasetax);
+
+          } else {
+              // Handle the case where no item is selected
+              $("#unit").val("");
+              $("#mrp").val("");
+               $("#purchasetax").val("purchasetax");
+          }
+      });
+  });
+</script>--!>
+<script>
+    // Get references to the input elements
+    const itemnameInput = document.getElementById('itemname');
+    const mrpInput = document.getElementById('mrp');
+    const purchasetaxInput = document.getElementById('purchasetax');
+    const totalqtyInput = document.getElementById('totalqty');
+    const totalInput = document.getElementById('total');
+
+    // Wait for the entire HTML document to be loaded
+    document.addEventListener('DOMContentLoaded', function () {
+        // Listen for changes in the itemname input
+        itemnameInput.addEventListener('change', function () {
+            // Get the selected option from the datalist
+            const selectedOption = document.querySelector(`#items option[value="${itemnameInput.value}"]`);
+
+            // Set the values of mrp and purchasetax inputs based on the selected option
+            if (selectedOption) {
+                mrpInput.value = selectedOption.getAttribute('data-mrp');
+                purchasetaxInput.value = selectedOption.getAttribute('data-purchasetax');
+            } else {
+                mrpInput.value = '';
+                purchasetaxInput.value = '';
+            }
+        });
+
+        // Listen for changes in the totalqty input
+        totalqtyInput.addEventListener('input', function () {
+            // Calculate the total value and display it in the total input
+            const mrp = parseFloat(mrpInput.value) || 0;
+            const purchasetax = parseFloat(purchasetaxInput.value) || 0;
+            const totalqty = parseInt(totalqtyInput.value) || 0;
+            const total = mrp * totalqty + (mrp * totalqty * purchasetax / 100);
+
+            // Set the total value in the total input
+            totalInput.value = total.toFixed(2); // Display the total with 2 decimal places
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        // Get the current date as YYYY-MM-DD format
+        var currentDate = new Date().toISOString().slice(0, 10);
+
+        // Set the value of the input field
+        $('#supdate').val(currentDate);
+        $('#date').val(currentDate);
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#itemname").change(function () {
+            var itemName = $(this).val();
+            var selectedItem = $("#items option[value='" + itemName + "']");
+
+            // Update the hidden input fields with the selected item's data
+            $("#mrp").val(selectedItem.data("mrp"));
+            $("#unit").val(selectedItem.data("unit"));
+            $("#purchasetax").val(selectedItem.data("purchasetax"));
+        });
+
+        // Create an array to store item data
+        var itemData = [];
+        // Function to calculate and display the grand total
+        function calculateAndDisplayGrandTotal() {
+            var grandTotal = 0;
+            for (var i = 0; i < itemData.length; i++) {
+                grandTotal += parseFloat(itemData[i].total);
+            }
+           $("#grandtotal").val(grandTotal.toFixed(2));
+        }
+
+
+        $("#add-item").click(function () {
+            var itemname = $("#itemname").val();
+            var mrp = $("#mrp").val();
+            var unit = $("#unit").val();
+            var purchasetax = $("#purchasetax").val();
+            var totalqty = $("#totalqty").val();
+            var total = $("#total").val();
+
+
+            // Add the item data to the array
+            itemData.push({
+                itemname: itemname,
+                mrp: mrp,
+                unit: unit,
+                purchasetax: purchasetax,
+                totalqty: totalqty,
+                total: total
+            });
+            // Calculate and display the grand total
+            calculateAndDisplayGrandTotal();
+
+
+            // Create a new row and append it to the table
+            var newRow = `
+                <tr>
+                    <td>${itemname}</td>
+                    <td>${mrp}</td>
+                    <td>${unit}</td>
+                    <td>${purchasetax}</td>
+                    <td>${totalqty}</td>
+                    <td>${total}</td>
+                </tr>
+            `;
+
+            $("#item-table-body").append(newRow);
+
+            // Clear the form fields
+            $("#itemname").val('');
+            $("#mrp").val('');
+            $("#unit").val('');
+            $("#purchasetax").val('');
+            $("#totalqty").val('');
+            $("#total").val('');
+        });
+
+        // Handle form submission
+        $("#purchaseform").submit(function () {
+            // Add the JSON data as a hidden input field
+            $("<input>")
+                .attr("type", "hidden")
+                .attr("name", "item_data")
+                .val(JSON.stringify(itemData))
+                .appendTo(this);
+            return true; // Allow the form to be submitted
+        });
+    });
+</script>
+</body>
+</html>

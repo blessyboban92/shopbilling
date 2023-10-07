@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>itemmaster</title>
+  </head>
+  <body>
+  <div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">Navbar</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'hiapp:home' %}">Back</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Pricing</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#">Disabled</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+  </div>
+    <h3 class="alert alert-warning text-center">Item Master</h3>
+  <div class ="container mt-3">
+    {% for message in messages %}
+    <p class="alert alert-success mt-3">{{message}}</p>
+    {% endfor %}
+ <div class="row">
+  {% if sel_items %}
+    <form action="{% url 'hiapp:update_item' sel_items.id %}" method="post">
+  {% csrf_token %}
+      <div class="col-md-12">
+        <div class="form-row">
+    <div class="form-group col-md-4">
+      <label for="itemname">Item Name</label>
+      <input type="text" class="form-control" name="itemname" id="itemname" value="{{ sel_items.itemname }}"placeholder="Item Name">
+    </div>
+
+    <div class="form-group col-md-4">
+      <label for="itemcode">ItemCode</label>
+      <input type="text" class="form-control" name="itemcode" placeholder="Item Code" value="{{ sel_items.itemcode }}">
+    </div>
+      <div class="form-group col-md-4">
+      <label for="category">Category</label>
+     <select class="form-control" name="category" value="{{ sel_items.category_id }}">
+        <option value="">Select a Category</option>
+        {% for category in categories %}
+          <option value="{{ category.id }}" {% if category.id == sel_items.category_id %}selected{% endif %}>{{ category.categoryname }}</option>
+        {% endfor %}
+      </select>
+     </div>
+    <div class="form-group col-md-4">
+      <label for="salestax">Sales Tax</label>
+      <select name="salestax" id="salestax" class="form-control" value="{{ sel_items.salestax }}">
+        <option value="18">18%</option>
+        <option value="5">5%</option>
+        <option value="23">23%</option>
+      </select>
+    </div>
+
+     <div class="form-group col-md-4">
+      <label for="mrp">MRP</label>
+      <input type="text" class="form-control" name="mrp" placeholder="Item MRP" value="{{ sel_items.mrp }}">
+    </div>
+     <div class="form-group col-md-4">
+      <label for="barcode">Barcode</label>
+      <input type="text" class="form-control" name="barcode" placeholder="BarCode" value="{{ sel_items.barcode }}">
+    </div>
+
+    <div class="form-group col-md-4">
+      <label for="hsncode">HsnCode</label>
+      <input type="text" class="form-control" name="hsncode" placeholder="HsnCode" value= "{{ sel_items.hsncode }}">
+    </div>
+    <div class="form-group col-md-4">
+      <label for="unit">Unit</label>
+      <select name="unit" id="unit" class="form-control" value="{{ sel_items.unit }}">
+        <option value="Nos.">Nos.</option>
+        <option value="Kg">Kg</option>
+        <option value="Ltr">Ltr</option>
+        <option value="Pkts">Packets</option>
+        <option value="Box">Boxes</option>
+        <option value="mtr">Meter</option>
+        <option value="dozen">Dozen</option>
+        <option value="pieces">Pieces</option>
+      </select>
+    </div>
+
+     <div class="form-group col-md-4">
+      <label for="brand">Brand</label>
+     <select class="form-control" name="brand" value="{{ sel_items.unit }}">
+        <option value="">Select a Brand</option>
+        {% for brand in brands %}
+          <option value="{{ brand.id }}"{% if brand.id == sel_items.brand_id %}selected{% endif %}>{{ brand.brandname }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group col-md-4">
+      <label for="purchasetax">Purchase Tax</label>
+      <select name="purchasetax" id="purchasetax" class="form-control" value="{{ sel_items.purchasetax }}">
+
+        <option value="18">18%</option>
+        <option value="5">5%</option>
+        <option value="23">23%</option>
+      </select>
+    </div>
+     <div class="form-group col-md-4">
+         <label></label>
+      <!-- Add this button in your HTML -->
+<!--<button class="btn btn-primary" id="openGridModal" type ="button"> Item Pricelist</button>
+     </div>!-->
+
+    <!-- Hidden modal -->
+<!--<div class="modal fade" id="itemPricelistModal" tabindex="-1" role="dialog" aria-labelledby="itemPricelistModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="itemPricelistModalLabel">Edit Item Pricelist</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">!-->
+        <!-- Editable grid goes here -->
+        <!--<table class="table table-hover">
+          <!-- Table headers -->
+          <!--<thead>
+            <tr>
+              <th>sl.no</th>
+              <th>PriceList</th>
+              <th>MRP</th>
+              <th>Discount</th>
+               <th>Amount</th>
+              <th>Item Id</th>
+              <th>Edit</th>
+            </tr>
+          </thead>
+          <tbody id="editableGrid">
+           {% for i in pricelists %}
+            <tr>
+              <td>{{forloop.counter}}</td>
+        <td>{{i.pricelistname}}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+               <td></td>
+               <td><button class="btn btn-primary btn-sm edit-button" type="button">Edit</button></td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+        <!-- End of editable grid -->
+      <!--</div>
+      <div class="modal-footer">
+        <!-- Add any buttons you need (e.g., Save, Close) here -->
+       <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>!-->
+          <div class="form-group col-md-4">
+<button type="submit" class="btn btn-primary">Update</button>
+  </div>
+        </div>
+
+  </form>
+    {% else %}
+    <form action="{% url 'hiapp:add_item' %}" method="post">
+                    {% csrf_token %}
+       <div class="form-row">
+       <div class="form-group col-md-4">
+      <label for="itemname">Item Name</label>
+      <input type="text" class="form-control" name="itemname" id="itemname" placeholder="Item Name">
+    </div>
+    <div class="form-group col-md-4">
+      <label for="itemcode">ItemCode</label>
+      <input type="text" class="form-control" name="itemcode" placeholder="Item Code">
+    </div>
+     <div class="form-group col-md-4">
+      <label for="category">Category</label>
+     <select class="form-control" name="category">
+        <option value="">Select a Category</option>
+        {% for category in categories %}
+          <option value="{{ category.id }}">{{ category.categoryname }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group col-md-4">
+      <label for="salestax">Sales Tax</label>
+      <select name="salestax" id="salestax" class="form-control">
+        <option value="18">18%</option>
+        <option value="5">5%</option>
+        <option value="23">23%</option>
+      </select>
+    </div>
+
+     <div class="form-group col-md-4">
+      <label for="mrp">MRP</label>
+      <input type="text" class="form-control" name="mrp" placeholder="Item MRP">
+    </div>
+     <div class="form-group col-md-4">
+      <label for="barcode">Barcode</label>
+      <input type="text" class="form-control" name="barcode" placeholder="BarCode">
+    </div>
+
+    <div class="form-group col-md-4">
+      <label for="hsncode">HsnCode</label>
+      <input type="text" class="form-control" name="hsncode" placeholder="HsnCode">
+    </div>
+    <div class="form-group col-md-4">
+      <label for="unit">Unit</label>
+      <select name="unit" id="unit" class="form-control">
+        <option value="Nos.">Nos.</option>
+        <option value="Kg">Kg</option>
+        <option value="Ltr">Ltr</option>
+        <option value="Pkts">Packets</option>
+        <option value="Box">Boxes</option>
+        <option value="mtr">Meter</option>
+        <option value="dozen">Dozen</option>
+        <option value="pieces">Pieces</option>
+      </select>
+    </div>
+
+     <div class="form-group col-md-4">
+      <label for="brand">Brand</label>
+     <select class="form-control" name="brand">
+        <option value="">Select a Brand</option>
+        {% for brand in brands %}
+          <option value="{{ brand.id }}">{{ brand.brandname }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group col-md-4">
+      <label for="purchasetax">Purchase Tax</label>
+      <select name="purchasetax" id="purchasetax" class="form-control">
+        <option value="18">18%</option>
+        <option value="5">5%</option>
+        <option value="23">23%</option>
+      </select>
+
+    <div class="form-group col-md-4">
+<button type="submit" class="btn btn-primary">Add</button>
+    </div></div>
+
+   <!-- Hidden modal -->
+<div class="modal fade" id="itemPricelistModal" tabindex="-1" role="dialog" aria-labelledby="itemPricelistModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="itemPricelistModalLabel">Edit Item Pricelist</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+<!--        <style>-->
+
+<!--  /* Style for the Amount and Discount input fields */-->
+<!--  .amount-input,-->
+<!--  .discount-input {-->
+<!--    width: 50px; /* Adjust the width as per your preference */-->
+<!--  }-->
+<!--</style>-->
+
+      <div class="modal-body">
+        <!-- Editable grid goes here -->
+        <table class="table table-hover" style="width: 80%;">
+          <!-- Table headers -->
+          <thead>
+            <tr>
+              <th>sl.no</th>
+              <th>PriceList</th>
+              <th>MRP</th>
+              <th>Discount</th>
+               <th>Amount</th>
+              <th>Item Id</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="editableGrid">
+           {% for i in pricelists %}
+            <tr>
+              <td>{{forloop.counter}}</td>
+         <td class="pricelistname">{{ i.pricelistname }}</td>
+
+              <td class="mrp-cell"></td>
+               <td><input type="text" class="discount-input item-{{ i.id }}" value="" data-editable="false"></td>
+      <td><input type="text" class="amount-input item-{{ i.id }}" value="" data-editable="false"></td>
+               <td class="item-id-cell">{{ i.id }}</td>
+
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+        <!-- End of editable grid -->
+      </div>
+      <div class="modal-footer">
+        <!-- Add any buttons you need (e.g., Save, Close) here -->
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="saveButton">Save</button>
+           <button type="button" class="btn btn-primary" id="editButton">Edit</button>
+      </div>
+    </div>
+  </div>
+</div>
+ </form>
+{% endif %}
+  <div class="mt-5">
+    <table class="table table-bordered">
+      <thead>
+      <tr>
+        <th scope="col">Sl.no</th>
+        <th scope="col">Item Code</th>
+          <th scope="col">Item Id</th>
+
+        <th scope="col">Item Name</th>
+        <th scope="col">MRP</th>
+        <th scope="col">Sales Tax in %</th>
+         <th scope="col">Purchase Tax in %</th>
+        <th scope="col">Category</th>
+
+
+       <!-- <th scope="col">Brand</th>
+        <th scope="col">Unit</th>!-->
+      </tr>
+      </thead>
+      <tbody>
+      {% for i in item_list%}
+      <tr data-item-id="{{ i.id }}">
+        <td>{{forloop.counter}}</td>
+        <td>{{i.itemcode}}</td>
+        <td>{{i.id}}</td>
+
+        <td>{{i.itemname}}</td>
+        <td class="mrp-cell">{{i.mrp}}</td>
+        <td>{{i.salestax}}</td>
+        <td>{{i.purchasetax}}</td>
+        <td>{{i.category}}</td>
+         <td><a href="{% url 'hiapp:edit_item' i.id %}" class="btn btn-warning btn-sm">Edit</a></td>
+        <td><a href="{% url 'hiapp:delete_item' i.id %}" class="btn btn-danger btn-sm">Delete</a></td>
+       <td><button class="btn btn-info openGridModal" id="openGridModal" data-item-id="{{ i.id }}"  data-url="{% url 'hiapp:get_mrp_item_id' %}" type ="button"> Item Pricelist</button></td>
+
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script>
+  $(document).on('input', '.discount-input', function () {
+    var discountInput = $(this);
+    var row = discountInput.closest('tr');
+    var amountInput = row.find('.amount-input');
+    var mrpCell = row.find('.mrp-cell');
+
+    var discount = parseFloat(discountInput.val());
+    var mrp = parseFloat(mrpCell.text());
+
+    if (!isNaN(discount) && !isNaN(mrp)) {
+      var newAmount = mrp - discount;
+      amountInput.val(newAmount);
+    }
+  });
+
+  $('.openGridModal').click(function () {
+    var row = $(this).closest('tr');
+    var itemID = row.find('.openGridModal').data('item-id'); // Get the item ID from data attribute
+    var modal = $('#itemPricelistModal');
+    modal.find('.discount-input').val('');
+    modal.find('.amount-input').val('');
+
+    // Cache the Discount and Amount input fields for this specific row
+    var discountInput = modal.find('.discount-input');
+    var amountInput = modal.find('.amount-input');
+    var saveButton = modal.find('.btn-primary');
+
+    // Extract the 'mrp' value from the current row
+    var mrpCell = row.find('.mrp-cell');
+    var mrp = parseFloat(mrpCell.text());
+
+    // Send an AJAX request to retrieve MRP and Item ID
+    $.ajax({
+      url: '{% url 'hiapp:get_mrp_item_id' %}', // Replace with your URL
+      data: { 'item_id': itemID },
+      dataType: 'json',
+      success: function (data) {
+        // Update the MRP and Item ID in the modal
+        modal.find('.mrp-cell').text(data.mrp);
+        modal.find('.item-id-cell').text(data.item_id);
+
+        // Enable editing of Discount and Amount fields for this specific row
+        discountInput.prop('disabled', false);
+        amountInput.prop('disabled', false);
+
+        // Show the modal
+        modal.modal('show');
+      },
+      error: function () {
+        // Handle errors if needed
+        alert('Failed to retrieve MRP and Item ID.');
+      }
+    });
+
+    // Handle the "Save" button click
+    saveButton.click(function () {
+      console.log('Save button clicked'); // Inside the "Save" button click handler
+
+      var dataToSave = [];
+
+      // Loop through each row in the grid
+      $('#editableGrid tr').each(function () {
+        console.log('Processing a row');
+        var row = $(this);
+        var itemID = row.find('.item-id-cell').text();
+        var discount = row.find('.discount-input').val();
+        var amount = row.find('.amount-input').val();
+        var pricelistname = row.find('.pricelistname').text();
+
+        // Create an object for each row's data, including 'mrp'
+        var rowData = {
+          'item_id': itemID,
+          'new_discount': discount,
+          'new_amount': amount,
+          'mrp': parseFloat(row.find('.mrp-cell').text()),
+           'pricelistname': pricelistname // Extract 'mrp' from the current row
+        };
+
+        dataToSave.push(rowData);
+        console.log(dataToSave)
+      });
+         console.log('Data to save:', dataToSave);
+      var csrfToken = $('[name=csrfmiddlewaretoken]').val();
+
+      // Send an AJAX request to save the data to the database
+      $.ajax({
+        url: '{% url 'hiapp:save_item_pricelist_bulk' %}',// Replace with your URL
+        method: 'POST',
+        data: JSON.stringify(dataToSave),
+        dataType: 'json',
+        contentType: 'application/json',
+        headers: { 'X-CSRFToken': csrfToken },
+        success: function (response) {
+          if (response.success) {
+            alert('Data saved successfully.');
+          } else {
+            alert('Failed to save data.');
+          }
+        },
+        error: function () {
+          alert('Failed to save data.'); // Handle errors if needed
+        }
+      });
+    });
+  });
+</script>
+
+   <!-- <script>-->
+<!--  $(document).on('input', '.discount-input', function () {-->
+<!--    var discountInput = $(this);-->
+<!--    var row = discountInput.closest('tr');-->
+<!--    var amountInput = row.find('.amount-input');-->
+<!--    var mrpCell = row.find('.mrp-cell');-->
+
+<!--    var discount = parseFloat(discountInput.val());-->
+<!--    var mrp = parseFloat(mrpCell.text());-->
+
+<!--    if (!isNaN(discount) && !isNaN(mrp)) {-->
+<!--      var newAmount = mrp - discount;-->
+<!--      amountInput.val(newAmount);-->
+<!--    }-->
+<!--  });-->
+
+<!--  $('.openGridModal').click(function () {-->
+<!--    var row = $(this).closest('tr');-->
+<!--    var itemID = row.find('.openGridModal').data('item-id'); // Get the item ID from data attribute-->
+<!--    var modal = $('#itemPricelistModal');-->
+<!--    modal.find('.discount-input').val('');-->
+<!--  modal.find('.amount-input').val('');-->
+
+
+<!--    // Cache the Discount and Amount input fields for this specific row-->
+<!--    var discountInput = modal.find('.discount-input');-->
+<!--    var amountInput = modal.find('.amount-input');-->
+<!--    var saveButton = modal.find('.btn-primary');-->
+
+<!--    // Send an AJAX request to retrieve MRP and Item ID-->
+<!--    $.ajax({-->
+<!--      url: '{% url 'hiapp:get_mrp_item_id' %}', // Replace with your URL-->
+<!--      data: { 'item_id': itemID },-->
+<!--      dataType: 'json',-->
+<!--      success: function (data) {-->
+<!--        // Update the MRP and Item ID in the modal-->
+<!--        modal.find('.mrp-cell').text(data.mrp);-->
+<!--        modal.find('.item-id-cell').text(data.item_id);-->
+
+<!--        // Enable editing of Discount and Amount fields for this specific row-->
+<!--        discountInput.prop('disabled', false);-->
+<!--        amountInput.prop('disabled', false);-->
+
+<!--        // Show the modal-->
+<!--        modal.modal('show');-->
+
+<!--        // Handle the "Save" button click-->
+<!--        saveButton.click(function () {-->
+<!--          var newDiscount = parseFloat(discountInput.val());-->
+
+<!--          // Update the grid cells with the new values for this specific row-->
+<!--          row.find('.discount-cell').text(newDiscount);-->
+<!--          row.find('.amount-cell').text(amountInput.val());-->
+
+<!--          // Disable editing for this specific row-->
+<!--          discountInput.prop('disabled', true);-->
+<!--          amountInput.prop('disabled', true);-->
+
+<!--          // Close the modal-->
+<!--          modal.modal('hide');-->
+<!--        });-->
+<!--      },-->
+<!--      error: function () {-->
+<!--        // Handle errors if needed-->
+<!--        alert('Failed to retrieve MRP and Item ID.');-->
+<!--      }-->
+<!--    });-->
+<!--  });-->
+<!--</script>-->
+
+  </body>
+</html>
